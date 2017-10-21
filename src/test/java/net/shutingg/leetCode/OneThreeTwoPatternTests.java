@@ -40,5 +40,10 @@ public class OneThreeTwoPatternTests {
 
         int nums9[] = {4, -3, 0, 6};
         assertFalse(oneThreeTwoPattern.find132pattern(nums9));
+
+        //231 is false
+        assertFalse(oneThreeTwoPattern.find132pattern(new int[]{1,0,1,-4,-3}));
+
+        assertFalse(oneThreeTwoPattern.find132pattern(new int[]{5,6,1,2,4}));
     }
 }
