@@ -6,16 +6,7 @@ import java.util.*;
  * Created by sguan on 10/30/17.
  */
 public class EvaluateDivision {
-    class MyPair{
-        String divisor;
-        double value;
-
-        public MyPair(String divisor, double value) {
-            this.divisor = divisor;
-            this.value = value;
-        }
-    }
-
+    //4 ms, beats 23.77%
     public double[] calcEquation(String[][] equations, double[] values, String[][] queries) {
         Set<String> variablesSet = new HashSet<>();
         for(int i=0;i<equations.length;i++){
@@ -24,56 +15,78 @@ public class EvaluateDivision {
             }
         }
         String[] variables = new String[variablesSet.size()];
-        for(String var:variables){
-
+        int index = 0;
+        for(String var:variablesSet){
+            variables[index]=var;
+            index++;
+        }
+        Map<String, Integer> indexMap = new HashMap<>();
+        for(int i =0; i<variables.length; i++){
+            indexMap.put(variables[i], i);
         }
 
-
-        Map<String, List<MyPair>> equationMap = new HashMap<>();
+        Map<Integer, Map<Integer, Double>> equationMap = new HashMap<>();
         for(int i=0; i<equations.length; i++){
-            if(equationMap.containsKey(equations[i][0])){
-                equationMap.get(equations[i][0]).add(new MyPair(equations[i][1], values[i]));
+            if(equationMap.containsKey(indexMap.get(equations[i][0]))){
+                Map<Integer, Double> neighbours = equationMap.get(indexMap.get(equations[i][0]));
+                neighbours.put(indexMap.get(equations[i][1]), values[i]);
             }else{
-                List<MyPair> list = new ArrayList<>();
-                list.add(new MyPair(equations[i][1], values[i]));
+                Map<Integer, Double> neighbours = new HashMap<>();
+                neighbours.put(indexMap.get(equations[i][1]), values[i]);
+                equationMap.put(indexMap.get(equations[i][0]), neighbours);
             }
-            if(equationMap.containsKey(equations[i][1])){
-                equationMap.get(equations[i][1]).add(new MyPair(equations[i][0], 1/values[i]));
+            if(equationMap.containsKey(indexMap.get(equations[i][1]))){
+                Map<Integer, Double> neighbours = equationMap.get(indexMap.get(equations[i][1]));
+                neighbours.put(indexMap.get(equations[i][0]), 1/values[i]);
             }else{
-                List<MyPair> list = new ArrayList<>();
-                list.add(new MyPair(equations[i][0], 1/values[i]));
+                Map<Integer, Double> neighbours = new HashMap<>();
+                neighbours.put(indexMap.get(equations[i][0]), 1/values[i]);
+                equationMap.put(indexMap.get(equations[i][1]), neighbours);
             }
         }
 
         double[] results = new double[queries.length];
         for(int i=0; i<queries.length; i++){
-            if(!equationMap.containsKey(queries[i][0]) || !equationMap.containsKey(queries[i][1])){
+            if(!equationMap.containsKey(indexMap.get(queries[i][0])) || !equationMap.containsKey(indexMap.get(queries[i][1]))){
                 results[i]=-1;
+            }else if(queries[i][0].equals(queries[i][1])){
+                results[i]=1;
             }else{
-                Map<String, Boolean> visited = new HashMap<>();;
-                for(String key: equationMap.keySet()){
-                    visited.put(key, false);
+                int start = indexMap.get(queries[i][0]);
+                int end = indexMap.get(queries[i][1]);
+                if(equationMap.get(start).containsKey(end)){
+                    results[i] = equationMap.get(start).get(end);
+                }else{
+                    results[i] = bfs(start, end, equationMap, variables.length);
                 }
-                Map<String, Double> distances = new HashMap<>();
-                Map<String, String> prev = new HashMap<>();
-                List<String> queue = new LinkedList<>();
-                queue.add(queries[i][0]);
-                while(!queue.isEmpty()){
-                    for(String q:queue){
-                        List<MyPair> neighbours = equationMap.get(q);
-                        if(neighbours!=null){
-                            for(MyPair pair:neighbours){
-                                if(!visited.get(pair.divisor)){
-                                    visited.put(pair.divisor, true);
-
-                                }
-                            }
-                        }
-                    }
-                }
-
-
             }
         }
+
+        return results;
+    }
+
+    private double bfs(int start, int end, Map<Integer, Map<Integer, Double>> equationMap, int size){
+        boolean[] visited = new boolean[size];
+        double[] distances = new double[size];
+
+        LinkedList<Integer> queue = new LinkedList<>();
+        queue.add(start);
+        visited[start] = true;
+        while(!queue.isEmpty()){
+            int q = queue.pop();
+            Map<Integer, Double> neighbours = equationMap.get(q);
+            if(neighbours.containsKey(end)){
+                return distances[q]==0?neighbours.get(end):neighbours.get(end)*distances[q];
+            }else{
+                for(int v:neighbours.keySet()){
+                    if(!visited[v]){
+                        visited[v] = true;
+                        distances[v] = distances[q]==0?neighbours.get(v):neighbours.get(v)*distances[q];
+                        queue.add(v);
+                    }
+                }
+            }
+        }
+        return -1;
     }
 }
