@@ -15,24 +15,22 @@ class TreeNode {
 public class SumRootToLeafNumbers {
     public int sumNumbers(TreeNode root) {
         if(root == null) return 0;
-        int result = 0;
-        LinkedList<Integer> links = new LinkedList<>();
-        linkNumber(root, 0, links);
-        for(int l:links){
-            result+=l;
-        }
-        return result;
+
+        return linkNumber(root, 0);
     }
 
-    void linkNumber(TreeNode node, int parentVal, LinkedList<Integer> links){
+    int linkNumber(TreeNode node, int parentVal){
         if(node.left == null && node.right == null){
-            links.add(parentVal*10+node.val);
+            return parentVal*10+node.val;
         }
+        int left = 0;
         if(node.left != null){
-            linkNumber(node.left, parentVal*10+node.val, links);
+            left = linkNumber(node.left, parentVal*10+node.val);
         }
+        int right = 0;
         if(node.right != null){
-            linkNumber(node.right, parentVal*10+node.val, links);
+            right = linkNumber(node.right, parentVal*10+node.val);
         }
+        return left + right;
     }
 }
