@@ -1,7 +1,5 @@
 package net.shutingg.leetCode;
 
-import java.util.LinkedList;
-
 /**
  * Created by sguan on 11/1/17.
  */
