@@ -28,4 +28,13 @@ public class BinaryTreeInorderTraversalTests {
         root.left = new TreeNode(4);
         assertArrayEquals(new Integer[]{4, 1, 3, 2}, binaryTreeInorderTraversal.inorderTraversal(root).toArray());
     }
+
+    @Test
+    public void testInorderTraversal3(){
+        TreeNode root = new TreeNode(2);
+        root.left = new TreeNode(3);
+        root.left.left = new TreeNode(1);
+
+        assertArrayEquals(new Integer[]{1,3,2}, binaryTreeInorderTraversal.inorderTraversal(root).toArray());
+    }
 }

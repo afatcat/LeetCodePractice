@@ -11,20 +11,18 @@ public class BinaryTreeInorderTraversal {
             return result;
         }
         Stack<TreeNode> stack = new Stack<>();
-        stack.push(root);
-        while(!stack.isEmpty()){
-            TreeNode node = stack.peek();
-            if(node.left!=null){
-                stack.push(node.left);
-                node.left = null;
-            }else{
-                result.add(node.val);
-                stack.pop();
-                if(node.right!=null){
-                    stack.push(node.right);
-                }
+        TreeNode current = root;
+
+        while(!stack.isEmpty() || current!=null){
+            while(current!=null){
+                stack.push(current);
+                current = current.left;
             }
+            current = stack.pop();
+            result.add(current.val);
+            current = current.right;
         }
+
         return result;
     }
 }
