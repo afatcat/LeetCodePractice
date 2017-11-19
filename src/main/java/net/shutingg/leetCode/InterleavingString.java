@@ -29,8 +29,8 @@ public class InterleavingString {
 
         for(int i=1; i<= s1.length(); i++){
             for(int j=1; j<= s2.length(); j++){
-                f[i][j] = f[i-1][j] && s1.substring(i-1, i).equals(s3.substring(i+j-1, i+j))
-                        || f[i][j-1] && s2.substring(j-1, j).equals(s3.substring(i+j-1, i+j));
+                f[i][j] = f[i-1][j] && s1.charAt(i-1) == s3.charAt(i+j-1)
+                        || f[i][j-1] && s2.charAt(j-1) == s3.charAt(i+j-1);
             }
         }
 
