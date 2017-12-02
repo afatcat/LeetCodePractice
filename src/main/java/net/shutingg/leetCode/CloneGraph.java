@@ -28,16 +28,9 @@ public class CloneGraph {
         }
 
         //clone edges
-        queue.add(node);
-        Set<UndirectedGraphNode> visited = new HashSet<UndirectedGraphNode>();
-        while(!queue.isEmpty()){
-            UndirectedGraphNode current = queue.removeFirst();
-            if(!visited.contains(current)){
-                UndirectedGraphNode copy = reflection.get(current);
-                current.neighbors.stream().forEach((element) -> {copy.neighbors.add(reflection.get(element));});
-                visited.add(current);
-                queue.addAll(current.neighbors);
-            }
+        for(UndirectedGraphNode current:reflection.keySet()){
+            UndirectedGraphNode copy = reflection.get(current);
+            current.neighbors.stream().forEach((element) -> copy.neighbors.add(reflection.get(element)));
         }
 
         return reflection.get(node);
