@@ -13,9 +13,6 @@ public class BackPackII {
             return 0;
         }
         int[][] f = new int[n+1][m+1];
-        for(int j=0; j<=m; j++){
-            f[0][j] = 0;
-        }
         for(int i = 1; i <= n; i++){
             for(int j = 0; j <= m; j++){
                 f[i][j] = f[i-1][j];
