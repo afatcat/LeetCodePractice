@@ -6,32 +6,34 @@ import java.util.*;
  * https://leetcode.com/problems/permutations-ii
  */
 public class PermutationsII {
+    /*
+    Backtracking solution
+     */
     public List<List<Integer>> permuteUnique(int[] nums) {
-        Set<List<Integer>> result = new HashSet<>();
-        LinkedList<Integer> list = new LinkedList<>();
-        for(int i=0; i < nums.length; i++){
-            list.add(nums[i]);
-        }
-        for(Integer i:list){
-            dfs(result, list, i, new ArrayList<>());
-        }
-        List<List<Integer>> asList = new ArrayList<>();
-        for(List<Integer> l:result){
-            asList.add(l);
-        }
-        return asList;
+        List<List<Integer>> result = new ArrayList<>();
+        boolean[] used = new boolean[nums.length];
+        Arrays.sort(nums);
+        dfs(result, used, nums, new LinkedList<>());
+        return result;
     }
 
-    private void dfs(Set<List<Integer>> result, LinkedList<Integer> list, Integer i, List<Integer> current){
-        if(list.size() == 1){
-            current.add(i);
-            result.add(current);
+    private void dfs(List<List<Integer>> result, boolean[] used, int[] nums, LinkedList<Integer> current){
+        if(current.size() == nums.length){
+            result.add(new ArrayList<>(current));
         }else{
-            LinkedList<Integer> list2 = new LinkedList<>(list);
-            list2.remove(i);
-            current.add(i);
-            for(Integer j:list2){
-                dfs(result, list2, j, new ArrayList<>(current));
+            for(int i=0; i < nums.length; i++){
+                if(!used[i]){
+                    //to prevent duplicates
+                    if(i > 0 && nums[i] == nums[i-1] && !used[i-1]){
+                        continue;
+                    }
+
+                    used[i] = true;
+                    current.add(nums[i]);
+                    dfs(result, used, nums, current);
+                    current.removeLast();
+                    used[i] = false;
+                }
             }
         }
     }
