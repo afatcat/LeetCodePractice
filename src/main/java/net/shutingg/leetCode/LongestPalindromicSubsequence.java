@@ -1,7 +1,11 @@
 package net.shutingg.leetCode;
 
+/**
+ * http://www.lintcode.com/en/problem/longest-palindromic-subsequence/
+ */
 public class LongestPalindromicSubsequence {
     /*
+     * DP solution
      * @param s: the maximum length of s is 1000
      * @return: the longest palindromic subsequence's length
      */
@@ -40,5 +44,49 @@ public class LongestPalindromicSubsequence {
         }
 
         return f[0][n-1];
+    }
+
+    /*
+     * Memoization
+     * @param s: the maximum length of s is 1000
+     * @return: the longest palindromic subsequence's length
+     */
+    public int longestPalindromeSubseqWithMemo(String s) {
+        int n = s.length();
+        if(n == 0){
+            return 0;
+        }
+
+        int[][] f = new int[n][n];
+
+        char[] cs = s.toCharArray();
+        calculate(cs, f, 0, n-1);
+
+        return f[0][n-1];
+    }
+
+    private int calculate(char[] cs, int[][] f, int i, int j){
+        if(f[i][j]!=0){
+            return f[i][j];
+        }
+        if(i == j){
+            f[i][j] = 1;
+            return 1;
+        }else if(i < 0 || j > cs.length-1 || i > j){
+            return 0;
+        }else if(i+1 == j){
+            if(cs[i] == cs[j]){
+                f[i][j] = 2;
+            }else{
+                f[i][j] = 1;
+            }
+            return f[i][j];
+        }else{
+            f[i][j] = Math.max(calculate(cs, f, i+1, j), calculate(cs, f, i, j-1));
+            if(cs[i] == cs[j]){
+                f[i][j] = Math.max(calculate(cs, f, i+1, j-1) + 2, f[i][j]);
+            }
+            return f[i][j];
+        }
     }
 }
