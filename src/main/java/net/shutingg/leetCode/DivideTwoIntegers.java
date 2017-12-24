@@ -5,12 +5,49 @@ package net.shutingg.leetCode;
  */
 public class DivideTwoIntegers {
     /**
-     * DP+binary search+bit operation+integer overflow
+     * Binary Search + bit op + Integer overflow
      * @param dividend
      * @param divisor
      * @return
      */
     public int divide(int dividend, int divisor) {
+        if(divisor == 0){
+            return Integer.MAX_VALUE;
+        }
+        if(dividend == Integer.MIN_VALUE){
+            if(divisor == -1){
+                return Integer.MAX_VALUE;
+            }
+        }
+
+        boolean sign = dividend > 0 && divisor > 0 || dividend < 0 && divisor < 0;
+
+        long a = Math.abs((long) dividend); //prevent overflow
+        long b = Math.abs((long) divisor);
+
+        long multiplier = 0;
+        while(a >= b){
+            long m = 1;
+            long d = b;
+            while(a >= (d<<1)){
+                d = d << 1;
+                m = m << 1;
+            }
+            a = a - d;
+            multiplier += m;
+        }
+
+        return sign ? (int) multiplier : -(int)(multiplier);
+    }
+
+
+    /**
+     * DP+binary search+bit operation+integer overflow
+     * @param dividend
+     * @param divisor
+     * @return
+     */
+    public int divide2(int dividend, int divisor) {
         if(divisor == 0){
             return Integer.MAX_VALUE;
         }
