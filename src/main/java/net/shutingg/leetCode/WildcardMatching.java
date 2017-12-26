@@ -35,7 +35,7 @@ public class WildcardMatching {
                 if(c2[j-1]!='*'){
                     f[i][j] = f[i-1][j-1] && (c1[i-1] == c2[j-1] || c2[j-1] == '?');
                 }else{
-                    f[i][j] = f[i-1][j] || f[i-1][j-1] || f[i][j-1];
+                    f[i][j] = f[i-1][j] || f[i][j-1];
                 }
             }
         }
