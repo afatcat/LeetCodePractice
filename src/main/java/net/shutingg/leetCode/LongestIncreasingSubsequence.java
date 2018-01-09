@@ -1,32 +1,32 @@
 package net.shutingg.leetCode;
 
 public class LongestIncreasingSubsequence {
-    /*
+    /**
+     * DP - O(N^2)
      * @param nums: An integer array
      * @return: The length of LIS (longest increasing subsequence)
      */
     public int longestIncreasingSubsequence(int[] nums) {
+        //f[i] = 1 or min(f[j]+1 | nums[j-1]<nums[i-1])
+
         int n = nums.length;
         if(n == 0) return 0;
-
-        int[][] f = new int[n+1][n+1];
+        int[] f = new int[n+1];
+        int[] a = new int[n+1];
+        f[0] = 0;
+        a[0] = Integer.MIN_VALUE;
         for(int i = 1; i <= n; i++){
-            for(int j = 1; j <= i; j++){
-                f[i][j] = 1;
-                if(j>1){
-                    for(int k = j-1; k >=1; k--){
-                        if(k>=1 && nums[j-1] > nums[k-1]){
-                            f[i][j] = Math.max(f[i][k] + 1, f[i][j]);
-                        }
-                    }
+            f[i] = 1;
+            for(int j = 1; j < i; j++){
+                if(nums[j-1] < nums[i-1]){
+                    f[i] = Math.max(f[i], f[j] + 1);
                 }
             }
         }
         int res = 0;
-        for(int i = 1; i <=n; i++){
-            res = Math.max(f[n][i], res);
+        for(int i = 1; i <= n; i++){
+            res = Math.max(res, f[i]);
         }
-
         return res;
     }
 }
