@@ -42,10 +42,6 @@ public class FrogJump {
             }
         }
 
-        if(f.get(stones[n-1]).size() > 0){
-            return true;
-        }else{
-            return false;
-        }
+        return !f.get(stones[n-1]).isEmpty();
     }
 }
