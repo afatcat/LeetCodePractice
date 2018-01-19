@@ -1,6 +1,30 @@
 package net.shutingg.leetCode;
 
+import java.util.Arrays;
+
 public class UniquePaths {
+    /**
+     * DP - coordinate, rolling array
+     * @param m: positive integer (1 <= m <= 100)
+     * @param n: positive integer (1 <= n <= 100)
+     * @return: An integer
+     */
+    public int uniquePaths3(int m, int n) {
+        int[] f = new int[n];
+        Arrays.fill(f, 1);
+        for(int i = 1; i < m ; i++){
+            for(int j = 0; j < n; j++){
+                if(j == 0){
+                    f[j] = 1;
+                }else{
+                    f[j] = f[j] + f[j-1];
+                }
+            }
+        }
+
+        return f[n-1];
+    }
+
     /**
      * DP - coordinate
      * @param m: positive integer (1 <= m <= 100)
