@@ -1,65 +1,61 @@
 package net.shutingg.leetCode;
 
+/**
+ * https://leetcode.com/problems/search-in-rotated-sorted-array/description/
+ * http://www.lintcode.com/en/problem/search-in-rotated-sorted-array/
+ */
 public class SearchInRotatedSortedArray {
+    /**
+     * Binary Search
+     * @param nums: an integer rotated sorted array
+     * @param target: an integer to be searched
+     * @return: an integer
+     */
     public int search(int[] nums, int target) {
-        if(nums.length == 0){
+        if(nums == null || nums.length == 0){
             return -1;
         }
 
-        //find pivot
-        int pivot = findPivot(nums, nums.length/2, 0, nums.length-1);
-        System.out.println("pivot: "+pivot);
+        int n = nums.length;
+        int st = 0;
+        int end = n - 1;
+        int p = st + (end - st) / 2;
 
-        //find target
-        if(pivot == 0){
-            return binarySearch(nums, target, nums.length/2, 0, nums.length-1);
-        }
-        int found = binarySearch(nums, target, (pivot-1)/2, 0, pivot-1);
-        if(found >= 0){
-            return found;
-        }
-        return binarySearch(nums, target, (pivot + nums.length)/2, pivot, nums.length-1);
-    }
-
-    private int binarySearch(int[] nums, int target, int current, int left, int right){
-        if(left > current || right < current){
-            return -1;
-        }
-
-        if(current == left || current == right){
-            if(nums[left] == target){
-                return left;
+        while(st + 1 < end){
+            if(nums[p] == target){
+                return p;
             }
-            if(nums[right] == target){
-                return right;
-            }
-            return -1;
-        }
 
-        if(nums[current] == target){
-            return current;
-        }
-
-        if(nums[current] > target){
-            return binarySearch(nums, target, (current+left)/2, left, current);
-        }
-        return binarySearch(nums, target, (current+right)/2, current, right);
-    }
-
-    private int findPivot(int[] nums, int current, int left, int right){
-        if(current == left){
-            if(nums[left] < nums[right]){
-                return left;
+            if(nums[p] < target){
+                if(nums[p] > nums[st]){
+                    st = p;
+                    p = st + (end - st) / 2;
+                }else if(nums[st] > target){
+                    st = p;
+                    p = st + (end - st) / 2;
+                }else{
+                    end = p;
+                    p = st + (end - st) / 2;
+                }
             }else{
-                return right;
+                if(nums[p] < nums[st]){
+                    end = p;
+                    p = st + (end - st) / 2;
+                }else if(nums[st] > target){
+                    st = p;
+                    p = st + (end - st) / 2;
+                }else{
+                    end = p;
+                    p = st + (end - st) / 2;
+                }
             }
-        }else if(nums[current]<nums[left]){
-            return findPivot(nums, (current+left)/2, left, current);
-        }else if(nums[current]>nums[left]){
-            return findPivot(nums, (current+right)/2, current, right);
+        }
+
+        if(nums[st] == target){
+            return st;
+        }else if(nums[end] == target){
+            return end;
         }else{
-            //error
-            System.out.println("error current:"+current+", left: "+left+", right: "+right);
             return -1;
         }
     }
