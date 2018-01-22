@@ -8,7 +8,7 @@ public class FirstBadVersion {
     public int findFirstBadVersion(int n) {
         int st = 1;
         int end = n;
-        int p = st + (end - st) / 2;
+        int p = st + (end - st) / 2; // instead of int p = (st + end) / 2 to prevent integer overflow
         while (st < end){
             if (SVNRepo.isBadVersion(p)) {
                 end = p;
