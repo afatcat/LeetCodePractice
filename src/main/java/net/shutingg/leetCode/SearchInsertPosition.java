@@ -6,6 +6,8 @@ package net.shutingg.leetCode;
 public class SearchInsertPosition {
     /**
      * Binary Search
+     * - Find first larger than or equal to target
+     * - Or find last smaller than target + 1
      * @param A: an integer sorted array
      * @param target: an integer to be inserted
      * @return: An integer
