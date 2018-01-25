@@ -5,6 +5,30 @@ package net.shutingg.leetCode;
  */
 public class MaximumSubarray {
     /**
+     * Greedy
+     * @param nums: A list of integers
+     * @return: A integer indicate the sum of max subarray
+     */
+    public int maxSubArray2(int[] nums) {
+        int n = nums.length;
+        if(n == 0){
+            return 0;
+        }
+
+        int res = nums[0];
+        int pre = nums[0] > 0 ? nums[0]:0;
+        for(int i = 1; i < n; i++){
+            if(pre + nums[i] > 0) {
+                pre = pre + nums[i];
+                res = Math.max(res, pre);
+            } else {
+                pre = 0;
+            }
+        }
+        return res;
+    }
+
+    /**
      * DP - O(n^2)
      * @param nums: A list of integers
      * @return: A integer indicate the sum of max subarray
