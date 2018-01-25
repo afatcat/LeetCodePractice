@@ -13,17 +13,15 @@ public class RemoveDuplicatesFromSortedList {
         if(head == null){
             return null;
         }
-        ListNode node1 = head;
-        ListNode node2 = node1.next;
-        while(node2 != null){
-            while(node2 != null && node2.val == node1.val){
-                node2 = node2.next;
+
+        ListNode prev = head;
+        ListNode node = head.next;
+        while(node != null) {
+            if(prev.val != node.val){
+                prev = node;
             }
-            node1.next = node2;
-            node1 = node1.next;
-            if(node2!=null){
-                node2 = node2.next;
-            }
+            node = node.next;
+            prev.next = node;
         }
         return head;
     }
