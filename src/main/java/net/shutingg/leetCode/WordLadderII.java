@@ -28,7 +28,7 @@ public class WordLadderII {
 
         //construct graph
         dict.add(end);
-        Queue<String> queue = new LinkedList<>();
+        Queue<String> queue = new ArrayDeque<>();
         Map<String, List<String>> pred = new HashMap<>();
         Map<String, Integer> distance = new HashMap<>();
         Set<String> visited = new HashSet<>();
