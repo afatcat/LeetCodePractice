@@ -1,12 +1,8 @@
 package net.shutingg.leetCode;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class LongestSubstringWithoutRepeatingCharacters {
     /**
      * Window Pointers
-     * (Map is not needed. Need to be improved)
      * @param s: a string
      * @return: an integer
      */
@@ -16,26 +12,23 @@ public class LongestSubstringWithoutRepeatingCharacters {
         }
 
         int n = s.length();
-        Map<Character, Integer> map = new HashMap<>();
+        int[] map = new int[256]; //ascii
         char[] cs = s.toCharArray();
-        map.put(cs[0], 0);
         int result = 0;
-        int j = 1;
+        int j = 0;
         for (int i = 0; i < n; i++) {
-            while (j < n && map.get(cs[j]) == null) {
-                map.put(cs[j], j);
+            while (j < n && map[cs[j]] == 0) {
+                map[cs[j]] = 1;
                 j++;
             }
+            result = Math.max(result, j - i);
 
-            result = Math.max(result, map.size());
-            if (j >= n - 1) {
+            //reached the end
+            if (j == n) {
                 break;
             }
-            int firstDup = map.get(cs[j]);
-            for (int k = i; k <= firstDup; k++) {
-                map.remove(cs[k]);
-            }
-            i = firstDup;
+
+            map[cs[i]] = 0;
         }
         return result;
     }
