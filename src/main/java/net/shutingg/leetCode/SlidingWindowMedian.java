@@ -7,7 +7,7 @@ import java.util.PriorityQueue;
 public class SlidingWindowMedian {
     /**
      * PriorityQueue
-     * - It will time out.
+     *
      * @param nums: A list of integers
      * @param k: An integer
      * @return: The median of the element inside the window at each moving
@@ -35,32 +35,26 @@ public class SlidingWindowMedian {
     class MidQueue {
         PriorityQueue<Integer> maxQueue;
         PriorityQueue<Integer> minQueue;
+        int midCount;
 
         MidQueue (int k) {
             maxQueue = new PriorityQueue<>(k, (a, b) -> b - a);
             minQueue = new PriorityQueue<>();
+            midCount = (k + 1)/2;
         }
 
         void add(int num) {
-            if (maxQueue.isEmpty()) {
+            if (maxQueue.size() < midCount) {
                 maxQueue.add(num);
-                return;
-            }
-            int mid = maxQueue.peek();
-            if (num > mid) {
-                minQueue.offer(num);
-                balance();
             } else {
-                maxQueue.offer(num);
-                balance();
+                minQueue.add(num);
             }
-        }
 
-        void balance() {
-            if (minQueue.size() > maxQueue.size()) {
-                maxQueue.offer(minQueue.poll());
-            } else if (maxQueue.size() > minQueue.size() + 1) {
-                minQueue.offer(maxQueue.poll());
+            if (maxQueue.size() == midCount && !minQueue.isEmpty() && maxQueue.peek() > minQueue.peek()) {
+                int large = maxQueue.poll();
+                int small = minQueue.poll();
+                maxQueue.offer(small);
+                minQueue.offer(large);
             }
         }
 
@@ -70,7 +64,6 @@ public class SlidingWindowMedian {
             } else {
                 maxQueue.remove(num);
             }
-            balance();
         }
 
         int getMid() {
