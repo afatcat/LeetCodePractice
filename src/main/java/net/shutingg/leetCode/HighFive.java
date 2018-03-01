@@ -6,7 +6,8 @@ import java.util.PriorityQueue;
 
 class Record {
     public int id, score;
-    public Record(int id, int score){
+
+    public Record(int id, int score) {
         this.id = id;
         this.score = score;
     }
@@ -26,7 +27,7 @@ public class HighFive {
             return res;
         }
         Map<Integer, PriorityQueue<Integer>> map = new HashMap<>();
-        for (Record r:results) {
+        for (Record r : results) {
             PriorityQueue<Integer> pq = map.get(r.id);
             if (pq == null) {
                 pq = new PriorityQueue<>();
@@ -40,9 +41,9 @@ public class HighFive {
                 pq.offer(top);
             }
         }
-        for (int key:map.keySet()) {
+        for (int key : map.keySet()) {
             double sum = 0;
-            for (int score:map.get(key)) {
+            for (int score : map.get(key)) {
                 sum += score;
             }
             res.put(key, sum / 5);
