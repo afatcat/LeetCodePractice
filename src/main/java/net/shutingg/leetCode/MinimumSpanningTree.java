@@ -13,8 +13,10 @@ public class MinimumSpanningTree {
         }
      }
     /**
-     * DFS
-     * Timeout!!
+     * UnionFind - Greedy
+     * Sort Connections first to greedily get minimum connection
+     * Due to requirement, can only sort by Connection, not cost
+     * UnionFind to ensure the graph is connected, and only connect when it is needed to
      *
      * @param connections given a list of connections include two cities and cost
      * @return a list of connections from results
@@ -25,40 +27,7 @@ public class MinimumSpanningTree {
             return res;
         }
 
-        Map<String, List<CityDis>> map = new HashMap<>();
-        for (Connection connection : connections) {
-            List<CityDis> list = map.get(connection.city1);
-            if (list == null) {
-                list = new ArrayList<>();
-                map.put(connection.city1, list);
-            }
-            CityDis cd = new CityDis(connection.city2, connection.cost);
-            list.add(cd);
-
-            list = map.get(connection.city2);
-            if (list == null) {
-                list = new ArrayList<>();
-                map.put(connection.city2, list);
-            }
-            cd = new CityDis(connection.city1, connection.cost);
-            list.add(cd);
-        }
-
-        Result result = new Result();
-        for (String city : map.keySet()) {
-            Set<String> set = new HashSet<>(map.keySet());
-            set.remove(city);
-            dfs(map, city, 0, result, new ArrayList<>(), set);
-        }
-        if (result.list == null) {
-            return res;
-        }
-
-        return result.list;
-    }
-
-    private List<Connection> sortList(List<Connection> list) {
-        PriorityQueue<Connection> pq = new PriorityQueue<>(list.size(), (a, b) -> {
+        Collections.sort(connections, (a, b) -> {
             if (a.cost != b.cost) {
                 return a.cost - b.cost;
             }
@@ -68,86 +37,51 @@ public class MinimumSpanningTree {
             return a.city2.compareTo(b.city2);
         });
 
-        for (Connection c : list) {
-            pq.offer(c);
+        UnionFind uf = new UnionFind();
+        Set<String> cities = new HashSet<>();
+        for (Connection conn : connections) {
+            if (uf.find(conn.city1).equals(uf.find(conn.city2))) {
+                continue;
+            }
+            cities.add(conn.city1);
+            cities.add(conn.city2);
+            uf.union(conn.city1, conn.city2);
+            res.add(conn);
         }
-        List<Connection> finalList = new ArrayList<>();
-        while (!pq.isEmpty()) {
-            finalList.add(pq.poll());
+        if (cities.size() - 1 == res.size()) {
+            return res;
         }
 
-        return finalList;
+        return new ArrayList<>();
     }
 
-    private List<Connection> compareList(List<Connection> list1, List<Connection> list2) {
-        for (int i = 0; i < list1.size() && i < list2.size(); i++) {
-            Connection c1 = list1.get(i);
-            Connection c2 = list2.get(i);
-            if (c1.cost < c2.cost) {
-                return list1;
-            } else if (c1.cost > c2.cost) {
-                return list2;
-            }
-            if (c1.city1.compareTo(c2.city1) < 0) {
-                return list1;
-            } else if (c1.city1.compareTo(c2.city1) > 0) {
-                return list2;
-            }
-            if (c1.city2.compareTo(c2.city2) < 0) {
-                return list1;
-            } else if (c1.city2.compareTo(c2.city2) > 0) {
-                return list2;
-            }
-        }
-        return list1;
-    }
+    class UnionFind {
+        Map<String, String> father;
 
-    private void dfs(Map<String, List<CityDis>> map, String current, int sum, Result result, List<Connection> curList, Set<String> cities) {
-        if (sum > result.sum) {
-            return;
+        UnionFind () {
+            father = new HashMap<>();
         }
-        if (cities.isEmpty()) {
-            if (result.list == null || result.sum > sum) {
-                result.list = sortList(new ArrayList<>(curList));
-                result.sum = sum;
-            } else if (result.sum == sum) {
-                result.list = compareList(result.list, sortList(new ArrayList<>(curList)));
+
+        String find(String x) {
+            if (father.get(x) == null) {
+                father.put(x, x);
+                return x;
             }
-            return;
-        }
-        List<CityDis> list = map.get(current);
-        for (CityDis cd : list) {
-            if (cities.contains(cd.city)) {
-                cities.remove(cd.city);
-                sum += cd.cost;
-                curList.add(construct(current, cd.city, cd.cost));
-                dfs(map, cd.city, sum, result, curList, cities);
-                curList.remove(curList.size() - 1);
-                sum -= cd.cost;
-                cities.add(cd.city);
+            if (x.equals(father.get(x))) {
+                return x;
             }
+            String root = find(father.get(x));
+            father.put(x, root);
+            return root;
         }
-    }
 
-    private Connection construct(String city1, String city2, int cost) {
-        if (city1.compareTo(city2) < 0) {
-            return new Connection(city1, city2, cost);
-        } else {
-            return new Connection(city2, city1, cost);
-        }
-    }
-
-    class Result {
-        List<Connection> list;
-        Integer sum = Integer.MAX_VALUE;
-    }
-
-    class CityDis {
-        String city;
-        int cost;
-        CityDis(String city, int cost) {
-            this.city = city;
-            this.cost = cost;
+        void union(String a, String b) {
+            String rootA = find(a);
+            String rootB = find(b);
+            if (a.equals(b)) {
+                return;
+            }
+            father.put(rootA, rootB);
         }
     }
 }
