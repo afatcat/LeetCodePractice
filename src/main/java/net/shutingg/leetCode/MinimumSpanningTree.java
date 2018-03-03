@@ -2,6 +2,9 @@ package net.shutingg.leetCode;
 
 import java.util.*;
 
+/**
+ * http://www.lintcode.com/en/problem/minimum-spanning-tree/
+ */
 public class MinimumSpanningTree {
     class Connection {
         public String city1, city2;
@@ -17,6 +20,8 @@ public class MinimumSpanningTree {
      * Sort Connections first to greedily get minimum connection
      * Due to requirement, can only sort by Connection, not cost
      * UnionFind to ensure the graph is connected, and only connect when it is needed to
+     *
+     * String compare is slow. Map String to Int is faster.
      *
      * @param connections given a list of connections include two cities and cost
      * @return a list of connections from results
