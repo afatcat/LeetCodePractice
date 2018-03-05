@@ -34,16 +34,36 @@ public class NineteenPercentile {
     public static void main(String args[] ) throws Exception {
         /* Enter your code here. Read input from STDIN. Print output to STDOUT */
         Scanner scanner = new Scanner(System.in);
-        String myString = scanner.next();
-
-        ZonedDateTime zonedDateTime = getLocalTime(args[0]);
-        double duration = Double.valueOf(args[1]);
-        if (isAtMinute(zonedDateTime)) {
-            double sec = generateTime();
-            System.out.println(recordTime + " "+ sec);
-            refreshCache(zonedDateTime);
+        boolean sameLine = false;
+        ZonedDateTime zonedDateTime = null;
+        double duration = -1;
+        while (scanner.hasNext()) {
+            if (!sameLine) {
+                long timestamp = scanner.nextLong();
+                zonedDateTime = getLocalTime(timestamp);
+            } else {
+                duration = scanner.nextDouble();
+                if (isAtMinute(zonedDateTime)) {
+                    printAndRefresh();
+                }
+                if ("".equals(recordTime)) {
+                    recordTime = timeStampAtMin(zonedDateTime);
+                }
+                insertTime(duration);
+            }
+            sameLine = !sameLine;
         }
-        insertTime(duration);
+
+        printAndRefresh();
+    }
+
+    private static void printAndRefresh() {
+        if ("".equals(recordTime)) {
+            return;
+        }
+        double sec = generateTime();
+        System.out.println(recordTime + " "+ sec);
+        refreshCache();
     }
 
     private static boolean isAtMinute(ZonedDateTime zonedDateTime) {
@@ -61,8 +81,8 @@ public class NineteenPercentile {
         return zonedDateTime.format(DateTimeFormatter.ISO_INSTANT);
     }
 
-    private static ZonedDateTime getLocalTime(String timestamp) {
-        return ZonedDateTime.ofInstant(Instant.ofEpochSecond(Long.valueOf(timestamp)), ZoneId.of("GMT-0"));
+    private static ZonedDateTime getLocalTime(long timestamp) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.of("GMT-0"));
     }
 
     private static String timeStampAtMin(ZonedDateTime zonedDateTime) {
@@ -98,9 +118,9 @@ public class NineteenPercentile {
         return cache[p];
     }
 
-    private static void refreshCache(ZonedDateTime zonedDateTime) {
+    private static void refreshCache() {
         cache = new Double[1000];
         pl = 0;
-        recordTime = timeStampAtMin(zonedDateTime);
+        recordTime = "";
     }
 }
