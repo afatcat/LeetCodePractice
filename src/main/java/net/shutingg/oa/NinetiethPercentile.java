@@ -9,20 +9,18 @@ import java.util.*;
 
 public class NinetiethPercentile {
     public static void main(String args[] ) throws Exception {
-        /* Enter your code here. Read input from STDIN. Print output to STDOUT */
         Scanner scanner = new Scanner(System.in);
         boolean sameLine = false;
         ZonedDateTime min = null;
-        double duration = -1;
         TimeCache timeCache = new TimeCache();
 
         while (scanner.hasNext()) {
             if (!sameLine) {
                 long timestamp = scanner.nextLong();
-                ZonedDateTime zonedDateTime = getLocalTime(timestamp);
+                ZonedDateTime zonedDateTime = convertTimeStampToZonedDateTime(timestamp);
                 min = zonedDateTime.truncatedTo(ChronoUnit.MINUTES);
             } else {
-                duration = scanner.nextDouble();
+                double duration = scanner.nextDouble();
 
                 if (timeCache.contains(min)) {
                     timeCache.insertTime(min, duration);
@@ -46,16 +44,25 @@ public class NinetiethPercentile {
         }
     }
 
-    private static ZonedDateTime getLocalTime(long timestamp) {
+    private static ZonedDateTime convertTimeStampToZonedDateTime(long timestamp) {
         return ZonedDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.of("GMT-0"));
     }
 
+    /**
+     * Partially cache response time so that 90th percentile can be estimated like taking a sample.
+     */
     static class TimeCache {
         final int CACHE_SIZE = 1000;
         Random rand = new Random();
         Map<ZonedDateTime, Double[]> cache = new HashMap<>();
         Map<ZonedDateTime, Integer> cachePlace = new HashMap<>();
 
+        /**
+         * Insert response time to the relevant group
+         *
+         * @param time truncated at minute so that it can be grouped
+         * @param t response time
+         */
         void insertTime(ZonedDateTime time, double t) {
             if (t < 0 || t > 150) {
                 return;
@@ -82,7 +89,13 @@ public class NinetiethPercentile {
             }
         }
 
-        double getNintyTime(ZonedDateTime time) {
+        /**
+         * Get the 90th percentile by sorting the sample
+         *
+         * @param time truncated at minute
+         * @return response time at 90th percentile of the sample
+         */
+        double getNinetiethTime(ZonedDateTime time) {
             Double[] slots = cache.get(time);
             int pl = cachePlace.get(time);
 
@@ -102,16 +115,28 @@ public class NinetiethPercentile {
             return slots[p];
         }
 
+        /**
+         * Whether time has been stored
+         *
+         * @param time truncated at minute
+         * @return true if time has been stored
+         */
         boolean contains(ZonedDateTime time) {
             return cache.containsKey(time);
         }
 
+        /**
+         * Get 90th percentile of time, clear related data and return a formatted time and duration string
+         *
+         * @param time truncated at minute
+         * @return format like "2000-07-04T00:00:00Z 69.5"
+         */
         String flush(ZonedDateTime time) {
-            double nintyTime = getNintyTime(time);
+            double ninetiethTime = getNinetiethTime(time);
             String sTime = time.format(DateTimeFormatter.ISO_INSTANT);
 
             //required output
-            String output = sTime + " "+ nintyTime;
+            String output = sTime + " "+ ninetiethTime;
 
             cache.remove(time);
             cachePlace.remove(time);
@@ -119,6 +144,11 @@ public class NinetiethPercentile {
             return output;
         }
 
+        /**
+         * Generate a list of the 90th percentile response time for every minute stored and clear the data
+         *
+         * @return list of string in format like "2000-07-04T00:00:00Z 69.5"
+         */
         List<String> flushAll() {
             List<ZonedDateTime> list = new ArrayList<>(cache.keySet());
             Collections.sort(list);
