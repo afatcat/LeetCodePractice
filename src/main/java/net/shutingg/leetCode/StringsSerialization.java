@@ -14,8 +14,7 @@ public class StringsSerialization {
         }
         StringBuilder sb = new StringBuilder();
         for (String str : strs) {
-            str.replaceAll(":", "::");
-            sb.append(str);
+            sb.append(str.replaceAll(":", "::"));
             sb.append(":;");
         }
         sb.delete(sb.length() - 2, sb.length());
@@ -27,12 +26,24 @@ public class StringsSerialization {
      * @return: dcodes a single string to a list of strings
      */
     public List<String> decode(String str) {
-        String[] strs = str.split(":;");
         List<String> list = new ArrayList<>();
-        for (String s : strs) {
-            s.replaceAll("::", ":");
-            list.add(s);
+        char[] cs = str.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < cs.length; i++) {
+            if (cs[i] == ':') {
+                if (cs[i + 1] == ';') {
+                    list.add(sb.toString());
+                    sb = new StringBuilder();
+
+                } else {
+                    sb.append(cs[i + 1]);
+                }
+                i++;
+            } else {
+                sb.append(cs[i]);
+            }
         }
+        list.add(sb.toString());
         return list;
     }
 }
