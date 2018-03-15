@@ -1,6 +1,7 @@
 package net.shutingg.leetCode;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +36,39 @@ class Interval {
 }
 
 public class MergeIntervals {
+    /**
+     * For intervals, sort by start first.
+     *
+     * @param intervals: interval list.
+     * @return: A new interval list.
+     */
     public List<Interval> merge(List<Interval> intervals) {
+        List<Interval> res = new ArrayList<>();
+        if (intervals == null || intervals.size() == 0) {
+            return res;
+        }
+
+        intervals.sort(Comparator.comparing(i -> i.start));
+        //Collections.sort(intervals, (a, b) -> a.start - b.start);
+        int start = intervals.get(0).start;
+        int end = intervals.get(0).end;
+        int i = 1;
+        while (i < intervals.size()) {
+            Interval interval = intervals.get(i);
+            if (end >= interval.start) {
+                end = Math.max(end, interval.end);
+            } else {
+                res.add(new Interval(start, end));
+                start = interval.start;
+                end = interval.end;
+            }
+            i++;
+        }
+        res.add(new Interval(start, end));
+        return res;
+    }
+
+    public List<Interval> merge2(List<Interval> intervals) {
         ArrayList<Interval> result = new ArrayList<>();
         if(intervals == null || intervals.size()==0){
             return result;
