@@ -14,27 +14,18 @@ public class MaximumSizeSubarraySumEqualsK {
             return 0;
         }
 
-        Map<Integer, List<Integer>> map = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         int sum = 0;
+        int max = 0;
         for (int i = 0; i < nums.length; i++) {
             sum += nums[i];
-            map.putIfAbsent(sum, new ArrayList<>());
-            map.get(sum).add(i);
-        }
-        int max = 0;
-        for (Integer v : map.keySet()) {
-            if (k == v) {
-                for (Integer i : map.get(v)) {
-                    max = Math.max(max, i + 1);
-                }
-            } else if (map.containsKey(v - k)) {
-                for (Integer i : map.get(v)) {
-                    for (Integer j : map.get(v - k)) {
-                        if (i > j) {
-                            max = Math.max(max, i - j);
-                        }
-                    }
-                }
+            if (sum == k) {
+                max = Math.max(max, i + 1);
+            } else if (map.containsKey(sum - k)) {
+                max = Math.max(max, i - map.get(sum - k));
+            }
+            if (!map.containsKey(sum)) {
+                map.put(sum, i);
             }
         }
 
