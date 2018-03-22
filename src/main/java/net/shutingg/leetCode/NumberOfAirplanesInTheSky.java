@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * http://www.lintcode.com/en/problem/number-of-airplanes-in-the-sky/
+ */
 public class NumberOfAirplanesInTheSky {
     /**
+     * Sweep line
+     *
      * @param airplanes: An interval array
      * @return: Count of airplanes are in the sky.
      */
