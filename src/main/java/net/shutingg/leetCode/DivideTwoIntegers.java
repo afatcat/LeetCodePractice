@@ -43,6 +43,7 @@ public class DivideTwoIntegers {
 
     /**
      * DP+binary search+bit operation+integer overflow
+     *
      * @param dividend
      * @param divisor
      * @return
@@ -97,5 +98,57 @@ public class DivideTwoIntegers {
         }
 
         return (int) multiplier * sign;
+    }
+
+
+    /**
+     * DP practice again
+     *
+     * @param dividend: the dividend
+     * @param divisor: the divisor
+     * @return: the result
+     */
+    public int divide3(int dividend, int divisor) {
+        if (dividend == 0) {
+            return 0;
+        }
+        if (divisor == 0) {
+            return Integer.MAX_VALUE;
+        }
+        if (divisor == 1) {
+            return dividend;
+        }
+        if (divisor == -1 && dividend == Integer.MIN_VALUE) {
+            return Integer.MAX_VALUE;
+        }
+        boolean negative = false;
+        if (dividend < 0 && divisor > 0 || dividend > 0 && divisor < 0) {
+            negative = true;
+        }
+        long d1 = Math.abs((long) dividend);
+        long d2 = Math.abs((long) divisor);
+
+        long[] sum = new long[31];
+        sum[0] = (long) d2;
+        int i = 0;
+        while (sum[i] + sum[i] <= d1) {
+            sum[i + 1] = sum[i] + sum[i];
+            i++;
+        }
+        long res = 0;
+        while (d1 >= d2 && i >= 0) {
+            if (d1 >= sum[i]) {
+                d1 = d1 - sum[i];
+                res += 1 << i;
+            }
+            i--;
+        }
+        if (res > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        }
+        if (negative) {
+            return (int) -res;
+        }
+        return (int) res;
     }
 }
