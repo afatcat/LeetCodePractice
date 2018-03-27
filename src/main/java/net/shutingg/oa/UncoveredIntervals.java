@@ -1,6 +1,14 @@
 package net.shutingg.oa;
 
 import java.util.*;
+
+/**
+ * This solution has O(n log n) complexity. It takes 4 steps:
+ * 1. Read the input and put them into a list - O(n)
+ * 2. Sort the list by the left value of the interval - O(n log n)
+ * 3. Merge the intervals - O(n)
+ * 4. Find the gaps between the merged intervals and print them out - O (n)
+ */
 public class UncoveredIntervals {
     public static void main(String args[] ) throws Exception {
         List<Pair> list = new ArrayList<>();
