@@ -1,9 +1,71 @@
 package net.shutingg.leetCode;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * https://leetcode.com/problems/insert-interval/description/
+ * http://www.lintcode.com/en/problem/insert-interval/
+ */
 public class InsertInterval {
+    /**
+     * 2nd attempt, simplified a bit
+     *
+     * @param intervals: Sorted interval list.
+     * @param newInterval: new interval.
+     * @return: A new interval list.
+     */
+    public List<Interval> insert2(List<Interval> intervals, Interval newInterval) {
+        if (newInterval == null) {
+            return intervals;
+        }
+        if (intervals == null) {
+            List<Interval> list = new ArrayList<>();
+            list.add(newInterval);
+            return list;
+        }
+
+        int i = 0;
+        while (i < intervals.size()) {
+            if (intervals.get(i).start < newInterval.start) {
+                i++;
+                continue;
+            }
+
+            break;
+        }
+
+        int j = i;
+        while (j < intervals.size()) {
+            if (newInterval.end >= intervals.get(j).start) {
+                newInterval.end = Math.max(newInterval.end, intervals.get(j).end);
+                j++;
+                continue;
+            }
+
+            break;
+        }
+
+        for (int k = i; k < j; k++) {
+            intervals.remove(i);
+        }
+
+        if (i > 0) {
+            if (intervals.get(i - 1).end >= newInterval.start) {
+                newInterval.start = intervals.get(i - 1).start;
+                newInterval.end = Math.max(intervals.get(i - 1).end, newInterval.end);
+                intervals.remove(i - 1);
+                i--;
+            }
+        }
+
+        intervals.add(i, newInterval);
+        return intervals;
+    }
+
+
+
     public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
         LinkedList<Interval> result = new LinkedList<>();
         if(intervals == null || intervals.size()==0){
