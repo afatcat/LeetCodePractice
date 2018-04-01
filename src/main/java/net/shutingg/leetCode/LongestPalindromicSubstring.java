@@ -5,7 +5,54 @@ package net.shutingg.leetCode;
  */
 public class LongestPalindromicSubstring {
     /**
+     * Manacher's Algorithm
+     * https://www.geeksforgeeks.org/manachers-algorithm-linear-time-longest-palindromic-substring-part-1/
+     * O(n) ?
+     *
+     * @param s
+     * @return
+     */
+    public String longestPalindrome2(String s) {
+        if (s == null || s.length() <= 1) {
+            return s;
+        }
+
+        int max = 1;
+        int st = 0;
+        int end = 0;
+        char[] cs = s.toCharArray();
+        int n = cs.length;
+        for (int i = 1; i < n - 1 && i + max / 2 < n; i++) {
+            for (int l = 1; i - l >= 0 && i + l < n; l++) {
+                if (cs[i - l] != cs[i + l]) {
+                    break;
+                }
+                if (2 * l + 1 > max) {
+                    max = 2 * l + 1;
+                    st = i - l;
+                    end = i + l;
+                }
+            }
+        }
+        for (int i = max / 2; i <= n - 2 && i <= n - 1 - max / 2; i++) {
+            for (int l = 1; i - l + 1 >= 0 && i + l < n; l++) {
+                if (cs[i - l + 1] != cs[i + l]) {
+                    break;
+                }
+                if (2 * l > max) {
+                    max = 2 * l;
+                    st = i - l + 1;
+                    end = i + l;
+                }
+            }
+        }
+
+        return s.substring(st, end + 1);
+    }
+
+    /**
      * DP
+     * O(n^2)
      *
      * @param s: input string
      * @return: the longest palindromic substring
