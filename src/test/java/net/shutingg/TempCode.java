@@ -37,4 +37,9 @@ public class TempCode {
             System.out.print(list.get(i) + " ");
         }
     }
+
+    @Test
+    public void testDouble() {
+        System.out.println(Double.MIN_VALUE);
+    }
 }
