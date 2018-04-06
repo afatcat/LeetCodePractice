@@ -1,4 +1,4 @@
-package net.shutingg.leetCode;
+package net.shutingg.systemDesign;
 
 import java.util.ArrayList;
 import java.util.List;
