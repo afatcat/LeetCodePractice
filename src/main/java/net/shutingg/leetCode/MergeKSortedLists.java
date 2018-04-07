@@ -5,7 +5,69 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+/**
+ * http://www.lintcode.com/en/problem/merge-k-sorted-lists/
+ */
 public class MergeKSortedLists {
+    /**
+     * Divide and Conquer
+     *
+     * @param lists: a list of ListNode
+     * @return: The head of one sorted list.
+     */
+    public ListNode mergeKLists3(List<ListNode> lists) {
+        if (lists == null) {
+            return null;
+        }
+
+        return merge(lists, 0, lists.size() - 1);
+    }
+
+    private ListNode merge(List<ListNode> lists, int st, int end) {
+        if (st > end) {
+            return null;
+        }
+        if (st == end) {
+            return lists.get(st);
+        }
+
+        int mid = (end - st) / 2 + st;
+        ListNode left = merge(lists, st, mid);
+        ListNode right = merge(lists, mid + 1, end);
+
+        return mergeTwoLists(left, right);
+    }
+
+    private ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+        while (list1 != null && list2 != null) {
+            if (list1.val < list2.val) {
+                current.next = list1;
+                current = list1;
+                list1 = list1.next;
+            } else {
+                current.next = list2;
+                current = list2;
+                list2 = list2.next;
+            }
+        }
+
+        while (list1 != null) {
+            current.next = list1;
+            current = list1;
+            list1 = list1.next;
+        }
+
+        while (list2 != null) {
+            current.next = list2;
+            current = list2;
+            list2 = list2.next;
+        }
+
+        return dummy.next;
+    }
+
 
     /**
      * Sort only the head of the lists
