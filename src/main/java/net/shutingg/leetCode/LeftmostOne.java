@@ -22,6 +22,50 @@ package net.shutingg.leetCode;
  */
 public class LeftmostOne {
     /**
+     * Binary Search with pointer that doesn't go back
+     *
+     * @param arr: The 2-dimension array
+     * @return: Return the column the leftmost one is located
+     */
+    public int getColumn2(int[][] arr) {
+        if (arr == null || arr.length == 0 || arr[0].length == 0) {
+            return -1;
+        }
+
+        int result = findFirstOne(arr[0], arr[0].length -1);
+
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i][result] == 0) {
+                continue;
+            }
+            while (result > 0 && arr[i][result - 1] == 1) {
+                result--;
+            }
+        }
+
+        return result;
+    }
+
+    private int findFirstOne(int[] row, int right) {
+        int left = 0;
+        int pl = (left + right) / 2;
+        while (left + 1 < right) {
+            if (row[pl] == 0) {
+                left = pl + 1;
+                pl = (left + right) / 2;
+            } else {
+                right = pl;
+                pl = (left + right) / 2;
+            }
+        }
+        if (row[left] == 1) {
+            return left;
+        }
+        return right;
+    }
+
+
+    /**
      * Binary Search
      *
      * @param arr: The 2-dimension array
