@@ -54,7 +54,7 @@ public class SegmentTreeQueryII {
         SegmentTreeNode(int start, int end, int count) {
             this.start = start;
             this.end = end;
-            this.count = count
+            this.count = count;
         }
     }
 }
