@@ -73,6 +73,6 @@ public class UglyNumberII {
             }
         }
 
-        return ((Long) pq.poll()).intValue();
+        return (pq.poll()).intValue();
     }
 }
