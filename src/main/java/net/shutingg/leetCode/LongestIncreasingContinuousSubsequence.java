@@ -1,7 +1,7 @@
 package net.shutingg.leetCode;
 
 /**
- * http://www.lintcode.com/en/problem/longest-increasing-continuous-subsequence/
+ * http://www.lintcode.com/en/problem/longest-increasing-subsequence/
  */
 public class LongestIncreasingContinuousSubsequence {
     /**
