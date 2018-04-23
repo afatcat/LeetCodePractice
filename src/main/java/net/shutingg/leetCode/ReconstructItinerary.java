@@ -6,6 +6,37 @@ import java.util.*;
  * https://leetcode.com/problems/reconstruct-itinerary/description/
  */
 public class ReconstructItinerary {
+    public List<String> findItinerary2(String[][] tickets) {
+        List<String> res = new ArrayList<>();
+        if (tickets == null || tickets.length == 0 || tickets[0].length != 2) {
+            return res;
+        }
+
+        Map<String, PriorityQueue<String>> graph = new HashMap<>();
+        for (int i = 0; i < tickets.length; i++) {
+            graph.computeIfAbsent(tickets[i][0], k -> new PriorityQueue<>()).add(tickets[i][1]);
+        }
+
+        dfs(graph, "JFK", res);
+
+        return res;
+    }
+
+    private void dfs(Map<String, PriorityQueue<String>> graph, String cur, List<String> res) {
+        while (graph.get(cur) != null && !graph.get(cur).isEmpty()) {
+            dfs(graph, graph.get(cur).poll(), res);
+        }
+
+        res.add(0, cur);
+    }
+
+
+    /**
+     * Backtracking
+     *
+     * @param tickets
+     * @return
+     */
     public List<String> findItinerary(String[][] tickets) {
         List<String> res = new ArrayList<>();
         if (tickets == null || tickets.length == 0 || tickets[0].length != 2) {
