@@ -11,29 +11,15 @@ public class IncreasingTripletSubsequence {
             return false;
         }
 
-        int min = nums[0];
-        Stack<Integer> stack = new Stack<>();
-        for (int i = 1; i < nums.length; i++) {
-            if (stack.isEmpty()) {
-                if (nums[i] < min) {
-                    min = nums[i];
-                }
-                if (nums[i] > min) {
-                    stack.push(nums[i]);
-                }
+        int small = Integer.MAX_VALUE;
+        int big = Integer.MAX_VALUE;
+        for (Integer i : nums) {
+            if (i <= small) {
+                small = i;
+            } else if (i <= big) {
+                big = i;
             } else {
-                if (nums[i] > stack.peek()) {
-                    return true;
-                }
-                if (nums[i] < stack.peek()) {
-                    if (nums[i] < min) {
-                        min = nums[i];
-                    }
-                    if (nums[i] > min) {
-                        stack.pop();
-                        stack.push(nums[i]);
-                    }
-                }
+                return true;
             }
         }
 
