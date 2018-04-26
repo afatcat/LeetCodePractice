@@ -2,6 +2,7 @@ package net.shutingg.leetCode;
 
 /**
  * https://leetcode.com/problems/split-array-into-consecutive-subsequences/description/
+ * https://leetcode.com/problems/split-array-into-consecutive-subsequences/discuss/106495/Java-O(n)-time-and-O(1)-space-solution-greedily-extending-shorter-subsequence
  */
 public class SplitArrayIntoConsecutiveSubsequences {
     /**
