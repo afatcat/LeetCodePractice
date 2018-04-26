@@ -25,4 +25,29 @@ package net.shutingg.leetCode;
  The minimum cycle section is [1,2,1,2,1,4], and the length is 6.
  */
 public class MinimumCycleSection {
+    /**
+     * Two Pointers
+     *
+     * @param array: an integer array
+     * @return: the length of the minimum cycle section
+     */
+    public int minimumCycleSection(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+
+        int i = 0, l = 1, j = 1;
+        while (j < array.length) {
+            if (array[i] == array[j]) {
+                i++;
+                j++;
+            } else {
+                i = 0;
+                l++;
+                j = l;
+            }
+        }
+
+        return j - i;
+    }
 }
