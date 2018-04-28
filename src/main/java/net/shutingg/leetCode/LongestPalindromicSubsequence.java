@@ -4,6 +4,46 @@ package net.shutingg.leetCode;
  * http://www.lintcode.com/en/problem/longest-palindromic-subsequence/
  */
 public class LongestPalindromicSubsequence {
+    /**
+     * DP with Rolling Array
+     *
+     * @param s
+     * @return
+     */
+    public int longestPalindromeSubseqWithRolling(String s) {
+        //f[i][i + l] = cs[i] == cs[i + l] ? f[i + 1][i + l - 1] + 2 : f[i + 1][i + l - 1];
+        //f[i][i + l] = Math.max(f[i][i + l], f[i][i + l - 1]);
+        //f[i][i + l] = Math.max(f[i][i + l], f[i + 1][i + l]);
+
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+
+        char[] cs = s.toCharArray();
+        int n = cs.length;
+        int[][] f = new int[n][3];
+
+        int now = 2;
+        int pre = 1;
+        int old = 0;
+        for (int i = 0; i < n; i++) {
+            f[i][now] = 1;
+        }
+
+        for (int l = 1; l <= n - 1; l++) {
+            now = (now + 1) % 3;
+            pre = (pre + 1) % 3;
+            old = (old + 1) % 3;
+            for (int i = 0; i + l < n; i++) {
+                f[i][now] = cs[i] == cs[i + l] ? f[i + 1][old] + 2 : f[i + 1][old];
+                f[i][now] = Math.max(f[i][now], f[i][pre]);
+                f[i][now] = Math.max(f[i][now], f[i + 1][pre]);
+            }
+        }
+
+        return f[0][now];
+    }
+
     /*
      * DP solution
      * @param s: the maximum length of s is 1000
